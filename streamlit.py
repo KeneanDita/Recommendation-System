@@ -4,13 +4,11 @@ import numpy as np
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load saved models and data
 teacher_vectors = np.load("assets/teacher_vectors.npy", allow_pickle=True)
 scaler = joblib.load("assets/scaler.pkl")
 features = joblib.load("assets/features.pkl")
-data = pd.read_csv("assets/original_teachers_df.csv")  # renamed from original_df
+data = pd.read_csv("assets/original_teachers_df.csv")
 
-# Feature options
 primary_subjects = sorted({col.split('_')[-1] for col in features if "Primary_Subject_" in col})
 secondary_subjects = sorted({col.split('_')[-1] for col in features if "Secondary_Subject_" in col})
 education_levels = sorted({col.split('_')[-1] for col in features if "Education_Level_" in col})
@@ -21,7 +19,6 @@ languages = sorted({col.split('_')[-1] for col in features if "Language_" in col
 genders = ["Male", "Female", "Non-Binary"]
 countries = ["Canada", "Australia", "Germany", "UK", "India", "USA", "France"]
 
-# Streamlit UI
 st.set_page_config(page_title="Teacher Recommendation System", layout="wide")
 st.title("🌟 Teacher Recommendation System")
 
@@ -40,7 +37,6 @@ rating = st.sidebar.slider("Minimum Rating", 3.0, 5.0, 4.5)
 courses = st.sidebar.slider("Courses Taught", 5, 50, 20)
 research_active = st.sidebar.checkbox("Research Active", value=True)
 
-# Scale input
 input_data = pd.DataFrame([{
     "Years_of_Experience": experience,
     "Student_Rating": rating,
@@ -48,8 +44,6 @@ input_data = pd.DataFrame([{
 }])
 scaled_vals = scaler.transform(input_data)
 
-# Build profile
-# Use unscaled values for display in query vector
 course_profile = {
     f"Primary_Subject_{primary_subject}": 1,
     f"Secondary_Subject_{secondary_subject}": 1,
@@ -68,14 +62,11 @@ course_profile = {
 }
 
 
-# Prepare query vector in correct feature order
 query_vector = np.array([course_profile.get(f, 0) for f in features]).reshape(1, -1)
 
-# Calculate similarity
 similarities = cosine_similarity(query_vector, teacher_vectors)
 top_indices = similarities[0].argsort()[-10:][::-1]
 
-# Show top matches
 st.header("🎯 Top Recommended Teachers")
 
 columns_to_display = [
@@ -83,11 +74,9 @@ columns_to_display = [
     "Student_Rating", "Years_of_Experience", "Courses_Taught"
 ]
 
-# Ensure selected columns exist
 available_columns = [col for col in columns_to_display if col in data.columns]
 recommended_teachers = data.iloc[top_indices][available_columns].reset_index(drop=True)
 
-# Display results nicely formatted
 st.dataframe(recommended_teachers.style.format({
     "Student_Rating": "{:.2f}",
     "Years_of_Experience": "{:.1f}",
