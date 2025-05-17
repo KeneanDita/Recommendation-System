@@ -49,6 +49,7 @@ input_data = pd.DataFrame([{
 scaled_vals = scaler.transform(input_data)
 
 # Build profile
+# Use unscaled values for display in query vector
 course_profile = {
     f"Primary_Subject_{primary_subject}": 1,
     f"Secondary_Subject_{secondary_subject}": 1,
@@ -59,18 +60,36 @@ course_profile = {
     f"Language_{language}": 1,
     f"Gender_{gender}": 1,
     f"Country_{country}": 1,
-    "Years_of_Experience": scaled_vals[0][0],
-    "Student_Rating": scaled_vals[0][1],
-    "Courses_Taught": scaled_vals[0][2],
+    "Years_of_Experience": experience,
+    "Student_Rating": rating,
+    "Courses_Taught": courses,
+
     "Is_Research_Active": 1 if research_active else 0
 }
 
-# Prepare query vector (exclude non-numeric columns)
-query_vector = np.array([course_profile.get(f, 0) for f in features if f not in ["Full_Name", "Email", "Teacher_ID"]])
-similarities = cosine_similarity([query_vector], teacher_vectors)
+
+# Prepare query vector in correct feature order
+query_vector = np.array([course_profile.get(f, 0) for f in features]).reshape(1, -1)
+
+# Calculate similarity
+similarities = cosine_similarity(query_vector, teacher_vectors)
 top_indices = similarities[0].argsort()[-10:][::-1]
 
 # Show top matches
 st.header("🎯 Top Recommended Teachers")
-recommended_teachers = data.iloc[top_indices][["Teacher_ID"]]
-st.dataframe(recommended_teachers)
+
+columns_to_display = [
+    "Teacher_ID", "Full_Name", "Email", "Primary_Subject", 
+    "Student_Rating", "Years_of_Experience", "Courses_Taught"
+]
+
+# Ensure selected columns exist
+available_columns = [col for col in columns_to_display if col in data.columns]
+recommended_teachers = data.iloc[top_indices][available_columns].reset_index(drop=True)
+
+# Display results nicely formatted
+st.dataframe(recommended_teachers.style.format({
+    "Student_Rating": "{:.2f}",
+    "Years_of_Experience": "{:.1f}",
+    "Courses_Taught": "{:.0f}"
+}))
