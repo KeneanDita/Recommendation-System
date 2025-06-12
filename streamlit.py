@@ -20,9 +20,9 @@ genders = ["Male", "Female", "Non-Binary"]
 countries = ["Canada", "Australia", "Germany", "UK", "India", "USA", "France"]
 
 st.set_page_config(page_title="Teacher Recommendation System", layout="wide")
-st.title("🌟 Teacher Recommendation System")
+st.title("Teacher Recommendation System")
 
-st.sidebar.header("🔍 Filter Options")
+st.sidebar.header("Filter Options")
 primary_subject = st.sidebar.selectbox("Primary Subject", primary_subjects)
 secondary_subject = st.sidebar.selectbox("Secondary Subject", secondary_subjects)
 education = st.sidebar.selectbox("Education Level", education_levels)
@@ -67,7 +67,7 @@ query_vector = np.array([course_profile.get(f, 0) for f in features]).reshape(1,
 similarities = cosine_similarity(query_vector, teacher_vectors)
 top_indices = similarities[0].argsort()[-10:][::-1]
 
-st.header("🎯 Top Recommended Teachers")
+st.header("Top Recommended Teachers")
 
 columns_to_display = [
     "Teacher_ID", "Full_Name", "Email", "Primary_Subject", 
