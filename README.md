@@ -52,6 +52,6 @@ This project is a teacher recommendation system that helps users find the most s
 * Implement a machine learning model for better prediction accuracy.
 * Integrate a database for real-time updates.
 
-### If you want to explore the docker build
+### If you want to explore the docker image
 
 [Docker link](https://hub.docker.com/repository/docker/keneandita/recommendation_system/general)
