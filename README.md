@@ -5,6 +5,10 @@ This project is a teacher recommendation system that helps users find the most s
 1. **Data Processing Notebook** - Prepares and processes the teacher data, including scaling numerical features and encoding categorical features.
 2. **Streamlit UI** - Provides a user-friendly interface for searching and recommending teachers.
 
+### If you want to explore the docker image
+
+[Docker link](https://hub.docker.com/repository/docker/keneandita/recommendation_system/general)
+
 ## Key Features
 
 * Recommends teachers based on experience, rating, courses taught, and other relevant attributes.
@@ -51,7 +55,3 @@ This project is a teacher recommendation system that helps users find the most s
 * Add personalized recommendation based on student feedback.
 * Implement a machine learning model for better prediction accuracy.
 * Integrate a database for real-time updates.
-
-### If you want to explore the docker image
-
-[Docker link](https://hub.docker.com/repository/docker/keneandita/recommendation_system/general)
